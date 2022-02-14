@@ -1,4 +1,6 @@
 var createError = require('http-errors');
+var http = require('http')
+const { uuid } = require('uuidv4');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -64,7 +66,7 @@ Issuer.discover('https://auth.lissi.io/')
 
     passport.use(
       'oidc',
-      new Strategy({ client }, (tokenSet, userinfo, done) => {
+      new Strategy({ client }, (tokenSet, done) => {
         return done(null, tokenSet.claims());
       })
     );
@@ -79,8 +81,39 @@ Issuer.discover('https://auth.lissi.io/')
 
     // start authentication request
     app.get('/auth', (req, res, next) => {
-      passport.authenticate('oidc', { issuance_session_id: '8c7203ca-e034-4499-a80c-134904c714ff', scope : 'openid profile vc_authn', nonce } )(req, res, next);
+      userId = uuid()
+      const issuanceSession = {
+        subjectIdentifier : userId,
+        claims:{
+          'First Name': req.query.firstName,
+          "Last Name": req.query.lastName,
+          "E-Mail": req.query.email,
+          "User ID": userId
+        },
+        credentialDefinitionId: process.env.CREDENTIAL_DEFINITION_ID
+      }
+
+      //console.log(issuanceSession)
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'X-Api-Key': process.env.CLIENT_SECRET
+      });
+      var options = {
+        url: 'https://auth.lissi.io/api/issuance-sessions',
+        port: '80',
+        method: 'POST',
+        headers,
+        json: issuanceSession
+
+      }
+
+      http.request(options, (res) => {console.log(res.data)})
+      //passport.authenticate('oidc', { issuance_session_id: '8c7203ca-e034-4499-a80c-134904c714ff', scope : 'openid profile vc_authn', nonce } )(req, res, next);
     });
+
+    app.get('/login', (req, res, next) =>{
+      console.log('test')
+    })
 
     // authentication callback
     app.get('/auth/callback', (req, res, next) => {
