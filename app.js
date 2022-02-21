@@ -8,17 +8,20 @@ var logger = require('morgan');
 const expressSesssion = require('express-session');
 const passport = require('passport');
 var { Issuer, Strategy, generators } = require('openid-client');
+const axios = require('axios')
 const dotenv = require('dotenv')
 dotenv.config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -39,9 +42,20 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.use(
+  expressSesssion({
+    secret: 'keyboard cat',
+    saveUninitialized: false,
+    resave: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 Issuer.discover('https://auth.lissi.io/')
-  .then(res => {
-    var client = new res.Client({
+  .then(lissiIssuer => {
+    var client = new lissiIssuer.Client({
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
       redirect_uris: [ 'http://localhost:3000/auth/callback' ],
@@ -51,37 +65,38 @@ Issuer.discover('https://auth.lissi.io/')
 
     const nonce = generators.nonce();
 
-    console.log(client)
-  
-    app.use(
-      expressSesssion({
-        secret: 'keyboard cat',
-        resave: false,
-        saveUninitialized: true
-      })
-    );
-
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    passport.use(
-      'oidc',
-      new Strategy({ client }, (tokenSet, done) => {
+    const strategy = new Strategy({ 
+      client,
+      usePKCE : false,
+      sessionKey: 'passport',
+      params:{
+        scope : 'openid profile vc_authn',
+        nonce,
+        // redirect_uri: 'http://localhost:3000/auth/callback',
+        // post_logout_redirect_uris: 'http://localhost:3000/logout/callback',
+        // client_id:client.client_id,
+        // client_secret:client.client_secret
+      } }, (tokenSet, done) => {
+        console.log(tokenSet.claims())
         return done(null, tokenSet.claims());
-      })
-    );
+    });    
+  
+   
 
-    // handles serialization and deserialization of authenticated user
+    passport.use(strategy);
+
     passport.serializeUser(function(user, done) {
       done(null, user);
     });
     passport.deserializeUser(function(user, done) {
+      console.log('des')
       done(null, user);
     });
 
     // start authentication request
     app.get('/auth', (req, res, next) => {
       userId = uuid()
+    
       const issuanceSession = {
         subjectIdentifier : userId,
         claims:{
@@ -92,32 +107,34 @@ Issuer.discover('https://auth.lissi.io/')
         },
         credentialDefinitionId: process.env.CREDENTIAL_DEFINITION_ID
       }
+    
+      // Request Issuance session Id
+      axios.post('https://auth.lissi.io/api/issuance-sessions', issuanceSession)
+      .then(result => {
+        console.log(result.status)
+        res.redirect('/auth/'+result.data.id)
+        
+      })
+      .catch(e =>{
+        console.error(e)
+      })
+         
+    }
+    );
 
-      //console.log(issuanceSession)
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'X-Api-Key': process.env.CLIENT_SECRET
-      });
-      var options = {
-        url: 'https://auth.lissi.io/api/issuance-sessions',
-        port: '80',
-        method: 'POST',
-        headers,
-        json: issuanceSession
-
-      }
-
-      http.request(options, (res) => {console.log(res.data)})
-      //passport.authenticate('oidc', { issuance_session_id: '8c7203ca-e034-4499-a80c-134904c714ff', scope : 'openid profile vc_authn', nonce } )(req, res, next);
+    app.get('/auth/:id', (req, res, next) =>{
+      passport.authenticate(strategy, { issuance_session_id: req.params.id })(req, res, next)
     });
 
     app.get('/login', (req, res, next) =>{
-      console.log('test')
+      passport.authenticate(strategy, { presentation_configuration_id:process.env.CREDENTIAL_DEFINITION_ID })(req, res, next)
     })
 
     // authentication callback
     app.get('/auth/callback', (req, res, next) => {
-      passport.authenticate('oidc', {
+      console.log(req.session)
+
+      passport.authenticate(strategy,{
         successRedirect: '/users',
         failureRedirect: '/'
       })(req, res, next);
@@ -158,3 +175,4 @@ Issuer.discover('https://auth.lissi.io/')
 
 
 module.exports = app;
+
