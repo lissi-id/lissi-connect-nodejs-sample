@@ -20,8 +20,7 @@ const { Issuer, Strategy, generators } = require ('openid-client');
     const client = new issuer.Client({
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,
-        redirect_uris: [ 'http://localhost:3000/auth/callback' ],
-        post_logout_redirect_uris: [ 'http://localhost:3000/logout/callback' ],
+        redirect_uris: [ 'http://localhost:3000/auth/callback' ]
     })
 
     const nonce = generators.nonce();

@@ -18,7 +18,7 @@ router.get(
   passport.authenticate('oidc', {failureRedirect:'/', failureMessage: true, successRedirect:'/user'}),
 );
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   req.logOut();
   res.redirect('/')
 });
