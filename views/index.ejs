@@ -2,16 +2,16 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    
   </head>
   <body>
-    <form action="/auth">
+    <form action="/auth/register">
       <input type="text" name="firstName" placeholder="First Name">
       <input type="text" name="lastName" placeholder="Last Name">
       <input type="email" name="email" placeholder="E-Mail">
-      <input type="submit" value="Register">
+      <input type="submit" value="register">
     </form>
-    <form action="/login">
+    <form action="/auth/login">
       <input type="submit" value="Login">
     </form>
   </body>
