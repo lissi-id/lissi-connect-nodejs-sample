@@ -1,8 +1,8 @@
 const axios = require('axios');
-const { uuid } = require('uuidv4');
+const { v4: uuidv4 } = require('uuid');
 
 const getIssuanceSessionId = async (req,res,next) => {
-    const userId = uuid()
+    const userId = uuidv4()
     const issuanceSession = {
         subjectIdentifier : userId,
         claims:{
@@ -18,9 +18,9 @@ const getIssuanceSessionId = async (req,res,next) => {
     .catch(e =>{
         console.error(e)
     })
-    
+
     res.locals.issuance_session_id = result.data.id
-    next()   
+    next()
 }
 
 module.exports = getIssuanceSessionId;

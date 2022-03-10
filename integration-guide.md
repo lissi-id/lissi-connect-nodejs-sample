@@ -94,10 +94,8 @@ An issuance session identifier is required for user registration using Lissi Con
 
 The subject identifier is a UUID identifier randomly generated using the uuidv4 node package
 
-    const { uuid } = require('uuidv4');
-    const userId = uuid()
-
-> This module will be deprecated in the future in favour of module UUID. Most of the functionality of this module is already included in UUID since version 8.3.0, so most of the functions of this module have already been marked as deprecated.
+    const { v4: uuidv4 } = require('uuid');
+    const userId = uuidv4()
 
 The claims must follow the credential definition template identified by the `credentialDefinitionId`.
 
