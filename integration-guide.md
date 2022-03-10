@@ -11,7 +11,7 @@ On this page the highlighted files are as described:
   - **`auth.js`**
   - `user.js`
 - strategies
-  - **`lissiOIDC.js`**
+  - **`lissiConnectOidc.js`**
 - middleware
   - **`issuanceSession.js`**
 - view
@@ -19,9 +19,9 @@ On this page the highlighted files are as described:
   - `error.ejs`
   - `user.ejs`
 
-## **`strategies/lissiOIDC.js`**
+## **`strategies/lissiConnectOidc.js`**
 
-This file defines and configures the passport strategy to a successful connection to Lissi Connect. We are using the pre-configured [`openid-client`](https://www.passportjs.org/packages/openid-client/) strategy to retrieves the information about the issuer through `/.well-known/` URLs specified by the issuer using the `Issuer.discover([issuer])` method
+This file defines and configures the passport strategy for a successful connection to Lissi Connect. We are using the pre-configured [`openid-client`](https://www.passportjs.org/packages/openid-client/) strategy to retrieves the information about the issuer through `/.well-known/` URLs specified by the issuer using the `Issuer.discover([issuer])` method
 
 > Note that these information are fetched asynchronously. Therefore we recommend to nest the strategy configuration in an asynchronous block\
     <pre>(async(err) => {
@@ -31,7 +31,7 @@ This file defines and configures the passport strategy to a successful connectio
       &nbsp;&nbsp;// Rest of the configuration below
     })();</pre>
 
-    const {Issuer} = require('openid-clien');
+    const {Issuer} = require('openid-client');
     
     const issuer = await Issuer.discover(process.env.ISSUER);
 
@@ -73,7 +73,7 @@ As for all passport strategy definitions, we must define both functions to (de)s
         done(null, user);
     });
 
-Finally, we specify to passport to use the defined strategy as a middleware. Naming the strategy is optional but good practice as multiple strategies can be defined.
+Finally, we indicate passport to use the defined strategy as a middleware. Naming the strategy is optional but good practice as multiple strategies can be defined.
     passport.use('oidc', strategy);
 
 ------
@@ -99,7 +99,7 @@ The subject identifier is a UUID identifier randomly generated using the uuidv4 
 
 > This module will be deprecated in the future in favour of module UUID. Most of the functionality of this module is already included in UUID since version 8.3.0, so most of the functions of this module have already been marked as deprecated.
 
-The claims must follow the Credential definition template related to credentialDefinitionId.
+The claims must follow the credential definition template identified by the `credentialDefinitionId`.
 
     const issuanceSession = {
       subjectIdentifier : userId,
@@ -122,7 +122,7 @@ Afterwards, we construct an Axios `POST` request with the issuanceSession object
         console.error(e)
     })
 
-Before calling on the next middleware function we modify the request object by adding an `issuance-session-id` field to `res.locals` as conventionally advised
+Before calling the next middleware function we modify the request object by adding an `issuance_session_id` field to `res.locals` as conventionally advised
 
     res.locals.isssuance_session_id = results.data.id;
     next();
