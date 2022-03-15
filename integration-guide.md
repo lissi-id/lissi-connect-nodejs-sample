@@ -23,7 +23,7 @@ On this page the highlighted files are as described:
 
 This file defines and configures the passport strategy for a successful connection to Lissi Connect. We are using the pre-configured [`openid-client`](https://www.passportjs.org/packages/openid-client/) strategy to retrieves the information about the issuer through `/.well-known/` URLs specified by the issuer using the `Issuer.discover([issuer])` method
 
-> Note that these information are fetched asynchronously. Therefore we recommend to nest the strategy configuration in an asynchronous block\
+> Note that this information are fetched asynchronously. Therefore, we recommend nesting the strategy configuration in an asynchronous block\
     <pre>(async(err) => {
       &nbsp;&nbsp;if(err){
         &nbsp;&nbsp;&nbsp;&nbsp;console.log(err)
@@ -64,7 +64,7 @@ And finally set the right scope to `'openid profile vc-authn'` as we define the 
         return done(null, tokenSet.claims());
     });
 
-As for all passport strategy definitions, we must define both functions to (de)serialize the user information received. The minimum implementation displaying the user information defined in the claims of the received token
+As for all passport strategy definitions, we must define both functions to (de)serialize the user's information is retrieved. The minimum implementation displays the user information defined in the claims of the received token
 
     passport.serializeUser(function(user, done) {
       done(null, user);   
@@ -80,7 +80,7 @@ Finally, we indicate passport to use the defined strategy as a middleware. Namin
 
 ## **`middleware/issuanceSession.js`**
 
-An issuance session identifier is required for user registration using Lissi Connect. The `issuanceSession` act as middleware and connects to the Lissi Connect API to get the required field `issuance-session-id`. The Lissi Connect `POST` defines a body value example as follow
+An issuance session identifier is required for user registration using Lissi Connect. The `issuanceSession` act as middleware and connects to the Lissi Connect API to get the required field `issuance_session_id`. The Lissi Connect `POST` defines a body value example as follow
 
     {
       "subjectIdentifier": "string",

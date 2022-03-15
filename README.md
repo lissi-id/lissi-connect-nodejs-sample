@@ -1,6 +1,6 @@
 # Integrating Lissi Connect into a NodeJS Application
 
-This express application presents a working example of a passwordless authentication method through Lissi Connect using `passportJS` and `openid-client` strategy.
+This express application presents a working example of a passwordless authentication method through Lissi Connect using `passportJS` and the `openid-client` strategy.
 
 ## Quickstart
 
@@ -17,8 +17,8 @@ Create and fill out a `.env` file at the root of the cloned repository following
 
 Run `npm start`
 
-The application is accessible through `http://localhost:{process.env.PORT}` from where you can register and login through Lissi Connect.
+The application is accessible through `http://localhost:{process.env.PORT}` from there, you can register and log in through Lissi Connect.
 
 ## Integration Guide
 
-To integrate Lissi Connect into you NodeJS application, please follow the [Integration Guide](integration-guide.md)
+To integrate Lissi Connect into your NodeJS application, please follow the [Integration Guide](integration-guide.md)
