@@ -110,7 +110,7 @@ The claims must follow the credential definition template identified by the `cre
       credentialDefinitionId: process.env.CREDENTIAL_DEFINITION_ID
     }
 
-The user's information are retrieved from the request parameter either passed through the URL or the body object depending on the implementation choice.
+The user's information is retrieved from the request parameter either passed through the URL or the body object depending on the implementation choice.
 
 Afterwards, we construct an Axios `POST` request with the issuanceSession object passed to the body of the request
 
