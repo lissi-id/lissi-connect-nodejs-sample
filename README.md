@@ -4,7 +4,7 @@ This express application presents a working example of a passwordless authentica
 
 ## Quickstart
 
-Clone this repository using `git clone https://github.com/lissi-id/lissi-oidc-nodejs-sample.git`
+Clone this repository using `git clone https://github.com/lissi-id/lissi-connect-nodejs-sample.git`
 
 Create and fill out a `.env` file at the root of the cloned repository following this template
 
