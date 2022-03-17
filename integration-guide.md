@@ -129,7 +129,7 @@ Before calling the next middleware function we modify the request object by addi
 
 ## **`routes/auth.js`**
 
-The `auth.js` route file relies on both previously detailed files. It makes use of the defined `'oidc'` passport strategy for authenticating the user (Login & Register). Although the register methods rely on the `getIssuanceSession` middleware function to get the required `issuance _session_id` to register a new user through Lissi Connect.
+The `auth.js` route file relies on both previously detailed files. It makes use of the defined `'oidc'` passport strategy for authenticating the user (Login & Register). Although the register methods rely on the `getIssuanceSession` middleware function to get the required `issuance_session_id` to register a new user through Lissi Connect.
 
 The authentication route file exposes two user authentication routes, a callback route as well as a logout route. The following diagrams show how the routes are accessed through in the NodeJS sample.
 

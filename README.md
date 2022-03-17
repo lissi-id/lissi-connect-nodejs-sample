@@ -9,7 +9,7 @@ Clone this repository using `git clone https://github.com/lissi-id/lissi-connect
 Create and fill out a `.env` file at the root of the cloned repository following this template
 
     CLIENT_ID=
-    CLIENT_SECRET=
+    API_KEY=
     PRESENTATION_CONFIG_ID=
     PORT=
     ISSUER=
