@@ -7,7 +7,7 @@ const passport = require('passport');
 
 dotenv.config();
 
-require('./strategies/lissiOIDC')
+require('./strategies/lissiConnectOidc')
 
 var indexRoute = require('./routes/index');
 var usersRoute = require('./routes/users');
